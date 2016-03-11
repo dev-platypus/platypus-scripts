@@ -1,6 +1,6 @@
-# New dev-platypus project.
+# platypus-scripts
 
-This is a new project of dev-platypus.
+This repository contains some scripts that make working with the dev-platypus community easier.
 
 #### Authors
 **Main developers: [Alexander Lenz], [Andreas Schulz]**  

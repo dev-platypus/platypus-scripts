@@ -1,0 +1,65 @@
+#!/usr/bin/env python
+from __future__ import print_function
+
+import sys
+import argparse
+
+try:
+    from plumbum import local
+    from plumbum import FG
+    from plumbum.cmd import git, scp
+except:
+    print("Please install plumbum: 'pip install plumbum'")
+    sys.exit(1)
+
+if sys.version_info.major < 3:
+    read = raw_input
+else:
+    read = input
+
+parser = argparse.ArgumentParser(
+            description='Clone dev-platypus projects from GerritHub.')
+parser.add_argument('project', type=str, help='The project\'s name.')
+parser.add_argument('-u', '--user', type=str,
+                            help='Your GitHub username.')
+args = parser.parse_args()
+
+if not args.user:
+    user = read("Enter username: ")
+else:
+    user = args.user
+
+try:
+    git['clone',
+        'ssh://' + user +
+            '@review.gerrithub.io:29418/dev-platypus/' + args.project] & FG
+
+    scp['-p',
+        '-P 29418',
+        user + '@review.gerrithub.io:hooks/commit-msg',
+        args.project + '/.git/hooks/'] & FG
+
+    with local.cwd(local.cwd / args.project):
+        git['config',
+            'remote.origin.push',
+            'HEAD:refs/for/master'] & FG
+        git['config',
+            'remote.draft.fetch',
+            '+refs/heads/*:refs/remotes/origin/*'] & FG
+        git['config',
+            'remote.draft.url',
+            'ssh://' + user +
+                '@review.gerrithub.io:29418/dev-platypus/' + 
+                args.project] & FG
+        git['config',
+            'remote.draft.push',
+            'HEAD:refs/drafts/master'] & FG
+        git['config',
+            'remote.bypass.fetch',
+            '+refs/heads/*:refs/remotes/origin/*'] & FG
+        git['config',
+            'remote.bypass.url',
+            'https://github.com/dev-platypus/' + args.project] & FG
+except:
+    # local commands print their errors anyway
+    sys.exit(1)
