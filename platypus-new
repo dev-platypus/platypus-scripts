@@ -1,14 +1,69 @@
-#!/bin/bash
-read -p "Enter your GitHub user account: " gh_user
-read -p "Enter new project name: " proj_name
-read -p "Enter $proj_name's description: " proj_desc
-curl -u "$gh_user" https://api.github.com/orgs/dev-platypus/repos -d "{\"name\":\"$proj_name\",\"description\":\"$proj_desc\"}"
-git clone https://github.com/dev-platypus/$proj_name
-git clone https://github.com/dev-platypus/templates /tmp/platypus-templates
-cd $proj_name
-scp /tmp/platypus-templates/repo_template/README.md .
-scp /tmp/platypus-templates/repo_template/LICENSE .
-rm -rf /tmp/platypus-templates
-git add -A
-git commit -m "Template readme and license included."
-git push
+#!/usr/bin/env python
+from __future__ import print_function
+
+import sys
+import argparse
+import json
+
+try:
+    from plumbum import local
+    from plumbum import FG
+    from plumbum.cmd import git, scp, curl, rm
+except:
+    print("Please install plumbum ('pip install plumbum'), git, and curl")
+    sys.exit(1)
+
+
+def main(argv=None):
+    if sys.version_info.major < 3:
+        read = raw_input
+    else:
+        read = input
+
+    parser = argparse.ArgumentParser(
+                description='Create new dev-platypus repositories.')
+    parser.add_argument('project', type=str, help='The project\'s name.')
+    parser.add_argument('-u', '--user', type=str,
+                        help='Your GitHub username.')
+    args = parser.parse_args()
+
+    if not args.user:
+        user = read("Enter username: ")
+    else:
+        user = args.user
+
+    desc = read("Enter the project's description: ")
+
+    credentials = {
+        'name': args.project,
+        'description': desc
+    }
+
+    try:
+        curl['-u',
+             user,
+             'https://api.github.com/orgs/dev-platypus/repos',
+             '-d',
+             json.dumps(credentials)] & FG
+        git['clone',
+            'https://github.com/dev-platypus/' + args.project] & FG
+        git['clone',
+            'https://github.com/dev-platypus/templates',
+            '/tmp/platypus-templates'] & FG
+        with local.cwd(local.cwd / args.project):
+            scp['/tmp/platypus-templates/repo_template/README.md',
+                '.'] & FG
+            scp['/tmp/platypus-templates/repo_template/LICENSE.md',
+                '.'] & FG
+            rm['-rf',
+               '/tmp/platypus-templates'] & FG
+            git['add', '-A'] & FG
+            git['commit', '-m', 'Template readme and license included.'] & FG
+            git['push'] & FG
+    except:
+        # local commands print their errors anyway
+        sys.exit(1)
+
+
+if __name__ == '__main__':
+    sys.exit(main(sys.argv))
