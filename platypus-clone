@@ -21,7 +21,7 @@ parser = argparse.ArgumentParser(
             description='Clone dev-platypus projects from GerritHub.')
 parser.add_argument('project', type=str, help='The project\'s name.')
 parser.add_argument('-u', '--user', type=str,
-                            help='Your GitHub username.')
+                    help='Your GitHub username.')
 args = parser.parse_args()
 
 if not args.user:
@@ -32,7 +32,7 @@ else:
 try:
     git['clone',
         'ssh://' + user +
-            '@review.gerrithub.io:29418/dev-platypus/' + args.project] & FG
+        '@review.gerrithub.io:29418/dev-platypus/' + args.project] & FG
 
     scp['-p',
         '-P 29418',
@@ -49,8 +49,8 @@ try:
         git['config',
             'remote.draft.url',
             'ssh://' + user +
-                '@review.gerrithub.io:29418/dev-platypus/' + 
-                args.project] & FG
+            '@review.gerrithub.io:29418/dev-platypus/' +
+            args.project] & FG
         git['config',
             'remote.draft.push',
             'HEAD:refs/drafts/master'] & FG
