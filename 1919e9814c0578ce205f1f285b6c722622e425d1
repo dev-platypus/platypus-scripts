@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a6ff13c_3f1ae96e",
+        "filename": "platypus-new",
+        "patchSetId": 2
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1007737
+      },
+      "writtenOn": "2016-03-15T09:45:29Z",
+      "side": 1,
+      "message": "What about the __main__ stuff etc? And functions and stuff.",
+      "revId": "1919e9814c0578ce205f1f285b6c722622e425d1",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
