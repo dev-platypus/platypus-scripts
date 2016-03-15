@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "3a6ff13c_90e74ae4",
+        "filename": "platypus-clone",
+        "patchSetId": 3
+      },
+      "lineNbr": 17,
+      "author": {
+        "id": 1007737
+      },
+      "writtenOn": "2016-03-15T18:59:43Z",
+      "side": 1,
+      "message": "Let\u0027s move this into platyutils.pycompat (later).",
+      "revId": "56fb8997aa82242fa3d404e65ed99d9ecc0be625",
+      "serverId": "d5d70762-12d0-45a1-890d-524b12d3f735",
+      "unresolved": false
+    }
+  ]
+}
